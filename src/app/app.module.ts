@@ -17,12 +17,12 @@ import { MaterialModule } from './modules/material.module';
     TimesheetComponent,
     AnalyticsComponent,
     TopNavbarComponent,
-    AnalyticsTableComponent
+    AnalyticsTableComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    MaterialModule
+    MaterialModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
