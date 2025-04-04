@@ -1,6 +1,6 @@
 <div class="main-container">
     <div class="cards">
-        <h2 *ngIf="department">{{ department.name }}</h2>
+        <h2 *ngIf="department">{{department.name}}</h2>
         
         <mat-card>
             <mat-form-field>
@@ -8,7 +8,7 @@
                 <mat-error *ngIf="employeeNameFC.hasError('duplicate')">Duplicate Name</mat-error>
             </mat-form-field>
 
-            <button mat-mini-fab color="primary" (click)="addEmployee()">
+            <button mat-mini-fab color="primary" (click)="addEmployee()" [disabled]="employeeNameFC.invalid">
                 <mat-icon>add</mat-icon>
             </button>
 
