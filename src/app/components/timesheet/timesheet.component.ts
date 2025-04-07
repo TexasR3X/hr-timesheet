@@ -17,6 +17,7 @@ export class TimesheetComponent implements OnInit {
   employeeNameFC = new FormControl("", this.nameValidator());
   employees: Employee[] = [];
   employeeId: number = 0;
+  weekdays: string[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
   constructor(
     private route: ActivatedRoute,
