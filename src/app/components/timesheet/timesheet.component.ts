@@ -74,4 +74,8 @@ export class TimesheetComponent implements OnInit {
       + employee.saturday
       + employee.sunday;
   }
+
+  deleteEmployee(index: number): void {
+    this.employees.splice(index, 1);
+  }
 }
