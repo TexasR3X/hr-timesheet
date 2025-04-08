@@ -12,9 +12,9 @@
             <tr *ngFor="let employee of employees; let i = index">
                 <td>{{employee.name}}</td>
                 <td *ngFor="let day of weekdays">{{employee[day]}}</td>
-                <td class="total-cell"></td>
+                <td class="total-cell">{{getTotalHours(employee)}}</td>
                 <td>{{employee.payRate}}/hr</td>
-                <td></td>
+                <td>{{employee.payRate * getTotalHours(employee)}}</td>
             </tr>
         </tbody>
     </table>
