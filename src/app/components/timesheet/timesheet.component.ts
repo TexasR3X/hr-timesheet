@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Department } from '../../interfaces/department';
 import { DepartmentsService } from '../../services/departments.service';
 import { AbstractControl, FormControl, ValidatorFn } from '@angular/forms';
 import { Employee } from '../../interfaces/employee';
+import { EmployeeService } from '../../services/employee.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-timesheet',
@@ -12,6 +14,7 @@ import { Employee } from '../../interfaces/employee';
   styleUrl: './timesheet.component.scss'
 })
 export class TimesheetComponent implements OnInit {
+  $departments: Observable<Department[]> | undefined;
   departments!: Department[];
   department!: Department;
   employeeNameFC = new FormControl("", this.nameValidator());
@@ -22,50 +25,59 @@ export class TimesheetComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private departmentsService: DepartmentsService,
+    private employeeService: EmployeeService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.departmentsService.getDepartments().subscribe(departments => {
-      this.departments = departments;
-      this.department = this.departments.find(department => department.id === this.route.snapshot.params['id']);
+    this.$departments = this.departmentsService.getDepartments();
+
+    this.$departments.subscribe(x => {
+        this.department = x.find(dept => dept.id === this.route.snapshot.params['id']);
     });
-    // this.departments = this.departmentsService.departments;
-    // this.department = this.departments.find(department => department.id === this.route.snapshot.params['id']);
   }
+  // ngOnInit(): void {
+  //   this.departmentsService.getDepartments().subscribe(departments => {
+  //     this.departments = departments;
+  //     this.department = this.departments.find(department => department.id === this.route.snapshot.params['id']);
+  //   });
+  //   // this.departments = this.departmentsService.departments;
+  //   // this.department = this.departments.find(department => department.id === this.route.snapshot.params['id']);
+  // }
 
   addEmployee(): void {
     if (this.employeeNameFC.value) {
-        this.employeeId++;
+      this.employeeId++;
 
-        this.employees.push({
-            id: this.employeeId.toString(),
-            departmentId: this.department?.id,
-            name: this.employeeNameFC.value,
-            payRate: Math.floor(Math.random() * 50) + 50,
-            monday: 0,
-            tuesday: 0,
-            wednesday: 0,
-            thursday: 0,
-            friday: 0,
-            saturday: 0,
-            sunday: 0
-        });
+      this.employees.push({
+        // id: this.employeeId.toString(),
+        departmentId: this.department?.id,
+        name: this.employeeNameFC.value,
+        payRate: Math.floor(Math.random() * 50) + 50,
+        monday: 0,
+        tuesday: 0,
+        wednesday: 0,
+        thursday: 0,
+        friday: 0,
+        saturday: 0,
+        sunday: 0
+      });
 
-        this.employeeNameFC.setValue('');
+      this.employeeNameFC.setValue('');
     }
   }
 
   nameValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-        let error = null;
-        if (this.employees && this.employees.length) {
-            this.employees.forEach(employee => {
-                if (employee.name.toLowerCase() === control.value.toLowerCase()) {
-                    error = {duplicate: true};
-                }
-            });
-        }
-        return error;
+      let error = null;
+      if (this.employees && this.employees.length) {
+        this.employees.forEach(employee => {
+          if (employee.name.toLowerCase() === control.value.toLowerCase()) {
+              error = {duplicate: true};
+          }
+        });
+      }
+      return error;
     };
   }
 
@@ -81,5 +93,13 @@ export class TimesheetComponent implements OnInit {
 
   deleteEmployee(index: number): void {
     this.employees.splice(index, 1);
+  }
+
+  submit(): void {
+    this.employees.forEach(employee => {
+      this.employeeService.saveEmployeeHours(employee);
+    });
+
+    this.router.navigate(['./departments']);
   }
 }
