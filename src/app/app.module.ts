@@ -11,6 +11,9 @@ import { AnalyticsTableComponent } from './components/analytics-table/analytics-
 import { MaterialModule } from './modules/material.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { environment } from './environment/environment';
 
 @NgModule({
   declarations: [
@@ -19,14 +22,17 @@ import { HttpClientModule } from '@angular/common/http';
     TimesheetComponent,
     AnalyticsComponent,
     TopNavbarComponent,
-    AnalyticsTableComponent,
+    AnalyticsTableComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     MaterialModule,
     FormsModule,
-    HttpClientModule, // HttpClientModule was deprecated in Angular 17.
+    HttpClientModule, // Note: HttpClientModule was deprecated in Angular 17.
+    // This configure Firebase in the project:
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]
